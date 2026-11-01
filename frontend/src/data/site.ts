@@ -8,7 +8,7 @@ export const site = {
   email: "hello@example.com",
   location: "Dhaka, Bangladesh",
   firm: "Kolpo",
-  heroImage: "/images/hero-portrait.svg", // swap for the real portrait (jpg/png/webp)
+  heroImage: "/images/hero-portrait.jpg", // swap for the real portrait (jpg/png/webp)
   youtube: "https://youtube.com/",
   instagram: "https://instagram.com/",
   linkedin: "https://linkedin.com/",

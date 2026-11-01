@@ -50,8 +50,12 @@ export default function Hero() {
         transition={{ duration: 2.4, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
         className="absolute inset-0 flex justify-center">
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={site.heroImage} alt="" className="h-full w-full max-w-[1100px] object-cover object-top grayscale
-          [mask-image:linear-gradient(to_bottom,black_55%,transparent)]" />
+        <img src={site.heroImage} alt="" className="h-full w-full max-w-[1100px] object-cover object-top grayscale"
+          style={{
+            maskImage: "linear-gradient(to bottom, black 55%, transparent), linear-gradient(to right, transparent, black 25%, black 75%, transparent)",
+            maskComposite: "intersect",
+            WebkitMaskComposite: "source-in",
+          }} />
       </motion.div>
 
       <motion.div style={{ y: textY, opacity: fade }} className="relative z-10 h-full flex flex-col justify-end px-6 md:px-12 pb-16 md:pb-20 max-w-[1700px] mx-auto">

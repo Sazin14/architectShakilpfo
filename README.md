@@ -44,7 +44,7 @@ src/types/          shared types (mirror these as DTOs in the backend)
 
 ## Where to drop assets
 
-- Hero portrait: replace `public/images/hero-portrait.svg` (or change `site.heroImage`).
+- Hero portrait: replace `public/images/hero-portrait.jpg` (or change `site.heroImage`).
 - Project/gallery/book images: set `image`/`cover` in `src/data/content.ts`, pass `src` to `ImagePlaceholder`.
 - Travel/film videos: set `youtubeId` in `videos` (`src/data/content.ts`).
 
