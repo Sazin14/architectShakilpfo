@@ -7,16 +7,18 @@ import { fields, site } from "@/data/site";
 const IntroContext = createContext({ done: true });
 export const useIntro = () => useContext(IntroContext);
 
-const PER_WORD = 620; // ms each field name stays on screen
-const DURATION = PER_WORD * fields.length;
-const easeInOutSine = (p: number) => -(Math.cos(Math.PI * p) - 1) / 2;
-const EASE = [0.16, 1, 0.3, 1] as const;
+const PER_FIELD = 700; // ms per field of work
+const DURATION = PER_FIELD * fields.length;
+const easeInOut = (p: number) => (p < 0.5 ? 4 * p ** 3 : 1 - (-2 * p + 2) ** 3 / 2);
+const pad = (n: number) => String(n).padStart(2, "0");
 
 /**
- * Landing intro: counter 00 -> 100 while the fields of work flash by one at a time.
- * Lives in the root layout (outside app/template.tsx) so the page transition can't hide it
- * and the header can't show through it. Plays on every fresh page load that lands on the
- * home page; clicking back to Home inside the site does not replay it.
+ * Landing intro. A quiet, editorial index: the six fields of work sit in a single column,
+ * the list glides upward so the current field is always on the centre line, and a fine
+ * counter + hairline progress keeps time. No bounce, blur or zoom.
+ *
+ * Lives in the root layout (outside app/template.tsx) so the page transition can't hide it.
+ * Plays on every fresh load that lands on Home; clicking Home inside the site doesn't replay it.
  */
 export default function IntroProvider({ children }: { children: ReactNode }) {
   const pathname = usePathname();
@@ -33,10 +35,10 @@ export default function IntroProvider({ children }: { children: ReactNode }) {
     const tick = (t: number) => {
       const elapsed = t - start;
       const p = Math.min(1, elapsed / DURATION);
-      setCount(Math.round(100 * easeInOutSine(p)));
-      setIndex(Math.min(fields.length - 1, Math.floor(elapsed / PER_WORD)));
+      setCount(Math.round(100 * easeInOut(p)));
+      setIndex(Math.min(fields.length - 1, Math.floor(elapsed / PER_FIELD)));
       if (p < 1) raf = requestAnimationFrame(tick);
-      else timer = setTimeout(() => setDone(true), 500);
+      else timer = setTimeout(() => setDone(true), 600);
     };
     raf = requestAnimationFrame(tick);
     return () => { cancelAnimationFrame(raf); clearTimeout(timer); root.classList.remove("lenis-stopped"); };
@@ -47,31 +49,52 @@ export default function IntroProvider({ children }: { children: ReactNode }) {
       <AnimatePresence>
         {!done && (
           <motion.div key="curtain" className="fixed inset-0 z-[100] bg-ink text-paper overflow-hidden"
-            exit={{ y: "-100%" }} transition={{ duration: 1.1, ease: [0.76, 0, 0.24, 1] }}>
-            <span className="absolute top-6 left-6 md:top-12 md:left-12 text-[11px] uppercase tracking-[0.35em] text-g500">{site.firm} — Portfolio</span>
-            <span className="absolute top-6 right-6 md:top-12 md:right-12 text-[11px] uppercase tracking-[0.35em] text-g500">
-              {String(index + 1).padStart(2, "0")} / {String(fields.length).padStart(2, "0")}
-            </span>
+            exit={{ clipPath: "inset(0 0 100% 0)" }} transition={{ duration: 1.3, ease: [0.76, 0, 0.24, 1] }}>
+            {/* Architectural hairlines */}
+            <div className="absolute inset-y-0 left-6 md:left-12 w-px bg-g800" />
+            <div className="absolute inset-x-0 top-1/2 h-px bg-g900" />
 
-            {/* Flashing field names: each digs in from depth, pops to size, then recedes. */}
-            <div className="absolute inset-0 flex items-center justify-center [perspective:900px]">
-              <AnimatePresence mode="popLayout">
-                <motion.span key={index}
-                  className="font-display text-[clamp(3.5rem,13vw,13rem)] text-center px-4 will-change-transform"
-                  initial={{ opacity: 0, scale: 0.55, z: -300, filter: "blur(14px)" }}
-                  animate={{ opacity: 1, scale: 1, z: 0, filter: "blur(0px)" }}
-                  exit={{ opacity: 0, scale: 1.35, z: 200, filter: "blur(10px)" }}
-                  transition={{ duration: 0.5, ease: EASE }}>
-                  {fields[index].title}
-                </motion.span>
-              </AnimatePresence>
+            {/* Top bar */}
+            <div className="absolute top-6 md:top-10 inset-x-6 md:inset-x-12 flex items-start justify-between text-[10px] md:text-[11px] uppercase tracking-[0.35em] text-g500">
+              <span className="pl-5 md:pl-8">{site.fullName}</span>
+              <span className="hidden sm:block">{site.firm} — Portfolio</span>
             </div>
 
-            <div className="absolute bottom-6 left-6 right-6 md:bottom-12 md:left-12 md:right-12 flex items-end justify-between">
-              <span className="font-light-h text-xl md:text-3xl text-g400">{site.fullName}</span>
-              <span className="font-display text-[clamp(3rem,9vw,8rem)] leading-none tabular-nums text-g300">{String(count).padStart(2, "0")}</span>
+            {/* Field index: the list glides so the current field rests on the centre line */}
+            <div className="absolute inset-0 [--row:clamp(3.25rem,8vw,7rem)]"
+              style={{
+                maskImage: "linear-gradient(to bottom, transparent 8%, black 34%, black 66%, transparent 92%)",
+                WebkitMaskImage: "linear-gradient(to bottom, transparent 8%, black 34%, black 66%, transparent 92%)",
+              }}>
+              <ul className="absolute left-6 md:left-12 top-1/2 pl-5 md:pl-8"
+                style={{
+                  transform: `translateY(calc(var(--row) * ${-(index + 0.5)}))`,
+                  transition: "transform 900ms cubic-bezier(0.65, 0, 0.35, 1)",
+                }}>
+                {fields.map((f, i) => (
+                  <li key={f.slug} className="flex items-center gap-5 md:gap-8 leading-none"
+                    style={{
+                      height: "var(--row)",
+                      opacity: i === index ? 1 : 0.16,
+                      transition: "opacity 900ms cubic-bezier(0.65, 0, 0.35, 1)",
+                    }}>
+                    <span className="w-6 text-[10px] md:text-xs tracking-[0.3em] text-g500 tabular-nums">{pad(i + 1)}</span>
+                    <span className="font-light-h text-[clamp(2.25rem,7vw,6.5rem)] tracking-[-0.03em]">{f.title}</span>
+                  </li>
+                ))}
+              </ul>
             </div>
-            <div className="absolute left-0 bottom-0 h-px bg-paper" style={{ width: `${count}%` }} />
+
+            {/* Counter + progress */}
+            <div className="absolute bottom-6 md:bottom-10 inset-x-6 md:inset-x-12 flex items-end justify-between">
+              <span className="pl-5 md:pl-8 text-[10px] md:text-[11px] uppercase tracking-[0.35em] text-g500">{site.location}</span>
+              <span className="font-light-h text-[clamp(3.5rem,9vw,8rem)] leading-[0.8] tabular-nums text-g300">
+                {pad(count)}<span className="text-g700 text-[0.3em] align-top ml-1 tracking-widest">%</span>
+              </span>
+            </div>
+            <div className="absolute inset-x-0 bottom-0 h-px bg-g900">
+              <div className="h-full bg-accent" style={{ width: `${count}%` }} />
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
