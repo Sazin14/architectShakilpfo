@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+import IntroProvider from "@/components/layout/IntroProvider";
 import SmoothScroll from "@/components/layout/SmoothScroll";
 import { site } from "@/data/site";
 
@@ -15,9 +16,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <body>
         <SmoothScroll>
-          <Header />
-          <main>{children}</main>
-          <Footer />
+          <IntroProvider>
+            <Header />
+            <main>{children}</main>
+            <Footer />
+          </IntroProvider>
         </SmoothScroll>
       </body>
     </html>

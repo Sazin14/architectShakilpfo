@@ -3,7 +3,7 @@ import type { Field, NavItem } from "@/types";
 // All content below is placeholder. The backend (NestJS) will later serve this.
 export const site = {
   name: "Shakil",
-  fullName: "Shakil [Surname]",
+  fullName: "AR. Shakhaouth Hossain Shakil",
   tagline: "Architect · Photographer · Filmmaker · Traveller · Author · Entrepreneur",
   email: "hello@example.com",
   location: "Dhaka, Bangladesh",

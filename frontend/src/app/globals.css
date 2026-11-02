@@ -73,3 +73,10 @@ body {
   .marquee-track { animation: none; }
   * { scroll-behavior: auto !important; }
 }
+
+/* Outline ("stroke" / hollow) lettering: transparent fill, thin black border. */
+.outline-text {
+  color: transparent;
+  -webkit-text-stroke: 1.5px var(--color-ink);
+  paint-order: stroke fill;
+}
