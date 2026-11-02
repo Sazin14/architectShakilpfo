@@ -4,6 +4,7 @@ import { useRef } from "react";
 import { useIntro } from "../layout/IntroProvider";
 import { site } from "@/data/site";
 import SplitHeading from "../ui/SplitHeading";
+import RoleSlider from "./RoleSlider";
 
 /** Landing: (intro curtain lives in IntroProvider) -> faded portrait fades in behind the name. */
 export default function Hero() {
@@ -35,12 +36,11 @@ export default function Hero() {
             <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6, duration: 1 }}
               className="text-[11px] uppercase tracking-[0.35em] text-g500 mb-6">{site.location}</motion.p>
             <SplitHeading as="h1" text={site.name.toUpperCase()} immediate delay={0.2}
-              className="text-ink text-[clamp(5rem,26vw,30rem)] -ml-[0.04em]" />
-            <div className="mt-8 flex flex-col md:flex-row md:items-end md:justify-between gap-6">
-              <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1.1, duration: 1 }}
-                className="font-light-h text-2xl md:text-4xl text-g600 max-w-2xl leading-tight">
-                Architect · Photographer · Filmmaker · Traveller · Author · Entrepreneur
-              </motion.p>
+              className="text-ink text-[clamp(4rem,20.8vw,24rem)] -ml-[0.04em]" />
+            <div className="mt-6 md:mt-8 flex flex-col md:flex-row md:items-end md:justify-between gap-8">
+              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1.1, duration: 1 }}>
+                <RoleSlider start={done} />
+              </motion.div>
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.6 }}
                 className="flex items-center gap-3 text-[11px] uppercase tracking-[0.3em] text-g500">
                 <span className="relative block h-12 w-px bg-g300 overflow-hidden">
