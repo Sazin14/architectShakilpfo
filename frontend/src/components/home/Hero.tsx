@@ -18,7 +18,7 @@ export default function Hero() {
   return (
     <section ref={ref} className="relative h-[100svh] min-h-[640px] overflow-hidden bg-paper">
       <div className="absolute inset-0 grid-paper opacity-40" />
-      <motion.div style={{ y: imgY }} initial={{ opacity: 0, scale: 1.08 }} animate={done ? { opacity: 0.3, scale: 1 } : {}}
+      <motion.div style={{ y: imgY }} initial={{ opacity: 0, scale: 1.08 }} animate={done ? { opacity: 0.42, scale: 1 } : {}}
         transition={{ duration: 2.4, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
         className="absolute inset-0 flex justify-center">
         {/* eslint-disable-next-line @next/next/no-img-element */}
